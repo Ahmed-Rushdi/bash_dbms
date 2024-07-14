@@ -1,0 +1,9 @@
+- Each DB will have its own directory
+- tables could be csv ot tsv files {table_name}.csv
+- Each table in a DB will have its own schema file .{table_name}.schema
+- Schema format is to be decided
+    - attribute1_name:attribute1_type:is_pk, attribute2_name:attribute2_type:is_pk, ....
+    - pk_name:pk_type, attribute1_name:attribute1_type, attribute2_name:attribute2_type
+    -   pk_name:pk_type
+        attribute1_name:attribute1_type
+        attribute2_name:attribute2_type
