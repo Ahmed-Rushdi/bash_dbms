@@ -1,4 +1,6 @@
 #!/bin/bash
+cd "$(dirname "$0")"
+
 if [[ $# -eq 0 ]]; then
     echo "Usage: $(basename $0) <database_name>"
     exit 1

@@ -1,90 +1,86 @@
 #!/bin/bash
-
+cd "$(dirname "${0}")"
 # save the schema arguments data types in an array.
 
 function read_schema() {
 
-schema_file="$1.schema";
-data_types_array=();
+  schema_file="$1.schema"
+  data_types_array=()
 
-if [ -f "$schema_file" ]; then
-   
-   while IFS= read -r line; do
+  if [ -f "$schema_file" ]; then
 
-      data_type=$( "$line" | cut -d ':' -f2 )
+    while IFS= read -r line; do
+
+      data_type=$("$line" | cut -d ':' -f2)
 
       if [ -n "$data_type" ]; then
 
         data_types_array+=($data_type)
       fi
-    
-    done 
 
-else 
+    done
+
+  else
 
     echo " schema file not found "
 
     return 1
 
-fi
+  fi
 
-    echo "${data_types_array[@]}"
+  echo "${data_types_array[@]}"
 
 }
 
+function insert_entries() {
 
+  table_name=$1
 
+  arguments=$#
 
-function insert_entries(){
+  array_schema=$(read_schema "$table_name")
 
-table_name=$1
+  shift
 
-arguments=$#
+  # first lets check if the arguments are the same
 
-array_schema=$(read_schema "$table_name")
+  if (arguments -nq echo ${#array_schema[@]}); then
 
-shift
+    echo " Incorrect number of Entries: Entries should be as follows: Table  ${array_schema[*@]}"
 
+    return 1
+  fi
 
-# first lets check if the arguments are the same 
+  # lets check each argument with the data type from the schema respectively
 
- if ( arguments -nq echo ${#array_schema[@]} ); then
+  index=0
 
-    echo " Incorrect number of Entries: Entries should be as follows: Table  ${array_schema[*@]}" 
+  for input in "$@"; do
 
-    return 1;
-fi
+    case "${array_schema[$index]}" in
 
-# lets check each argument with the data type from the schema respectively 
+    "int")
 
-index=0
+      if ! [[ "$input" =~ ^[0-9]+$ ]]; then
 
-for input in "$@"; do
+        echo " the field you entered ${input} is not of type int "
 
-  case "${array_schema[$index]}" in 
-
-    "int") 
-        
-        if ! [[ "$input" =~ ^[0-9]+$ ]]; then 
-
-          echo " the field you entered ${input} is not of type int "
-
-          return 1
-        fi 
-        ;;
+        return 1
+      fi
+      ;;
     "string")
 
-        if ! [[ "${input}" =~ ^[a-zA-Z][^,] ]]; then
+      if ! [[ "${input}" =~ ^[a-zA-Z][^,] ]]; then
 
-           echo " the field you entered ${input} is not an allowed string"
+        echo " the field you entered ${input} is not an allowed string"
 
-           return 1
+        return 1
 
-        fi
-        ;;
+      fi
+      ;;
 
     *)
-      
+
       echo " wrong data type "
 
       return 1
@@ -93,22 +89,22 @@ for input in "$@"; do
     esac
     ((index++))
 
- done
+  done
 
-# now we checked that each argument is corectly entered as opposed to the table's schema
+  # now we checked that each argument is corectly entered as opposed to the table's schema
 
-data_entered=""
-delimeter="  "
+  data_entered=""
+  delimeter="  "
 
-for arg in "$@"; do 
-   
-   data_entered+="$delimeter$arg"
-done
+  for arg in "$@"; do
 
-# append data_enetered to the file 
+    data_entered+="$delimeter$arg"
+  done
 
-echo "$data_entered"  >> "$table_name"
+  # append data_enetered to the file
 
-return 0
+  echo "$data_entered" >>"$table_name"
+
+  return 0
 
 }

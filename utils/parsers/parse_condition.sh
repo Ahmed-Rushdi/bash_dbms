@@ -1,12 +1,13 @@
 #!/bin/bash
+cd "$(dirname "$0")"
 if [[ $# -ne 3 ]]; then
   echo "Usage: $(basename $0) <database_name> <table_name> <condition>
 #  <condition1,condition2,condition3,...>"
   exit 1
-elif [[ ! -d "../databases/$1" ]]; then
+elif [[ ! -d "../../databases/$1" ]]; then
   echo "Database does not exist: $1"
   exit 1
-elif [[ ! -f "../databases/$1/$2.csv" ]]; then
+elif [[ ! -f "../../databases/$1/$2.csv" ]]; then
   echo "Table does not exist: $2"
   exit 1
 else
@@ -26,7 +27,7 @@ else
     v_type="int"
   fi
   # Check if field exists in table schema
-  if [[ $(grep -cG "^$field:" "../databases/$1/.$2.schema") -eq 0 ]]; then
+  if [[ $(grep -cG "^$field:" "../../databases/$1/.$2.schema") -eq 0 ]]; then
     echo "Attribute does not exist: $field"
     exit 1
   # Check if operator is valid
@@ -35,12 +36,12 @@ else
     echo "Invalid operator: $comp_op"
     exit 1
   # Check if type of value matches type of field (specifically if field is integer)
-  elif [[ $v_type == "str" && $(grep -cG "^$field:$v_type.*$" "../databases/$1/$2.csv") -eq 0 ]]; then
+  elif [[ $v_type == "str" && $(grep -cG "^$field:$v_type.*$" "../../databases/$1/$2.csv") -eq 0 ]]; then
     echo "Invalid value: $value for $field"
     exit 1
   fi
-  field_number=$(grep -nG "^$field:" "../databases/$1/.$2.schema" | cut -d ":" -f 1)
-  awk_cmd="awk -F ',' '{if (\$${field_number} ${comp_op} ${value}) print NR}' ../databases/\$1/\$2.csv"
+  field_number=$(grep -nG "^$field:" "../../databases/$1/.$2.schema" | cut -d ":" -f 1)
+  awk_cmd="awk -F ',' '{if (\$${field_number} ${comp_op} ${value}) print NR}' ../../databases/\$1/\$2.csv"
   matched_rows=$(eval "$awk_cmd")
   echo "$matched_rows"
   exit 0
