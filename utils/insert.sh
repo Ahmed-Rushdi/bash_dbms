@@ -1,10 +1,10 @@
 #!/bin/bash
 cd "$(dirname "${0}")"
-# save the schema arguments data types in an array.
+# save the schema args data types in an array.
 
 function read_schema() {
 
-  schema_file="$1.schema"
+  schema_file="../databases/$1/.$2.schema"
   data_types_array=()
 
   if [ -f "$schema_file" ]; then
@@ -12,13 +12,13 @@ function read_schema() {
     while IFS= read -r line; do
 
       data_type=$("$line" | cut -d ':' -f2)
+      nullable=$("$line" | cut -d ':' -f3)
 
-      if [ -n "$data_type" ]; then
-
-        data_types_array+=($data_type)
+      if [[ "$data_type" ]]; then
+        data_types_array+=("$data_type:$nullable")
       fi
 
-    done
+    done < "$schema_file"
 
   else
 
@@ -33,21 +33,18 @@ function read_schema() {
 }
 
 function insert_entries() {
+  database_name=$1
+  table_name=$2
 
-  table_name=$1
+  array_schema=$(read_schema "$database_name" "$table_name")
+  shift 2
 
-  arguments=$#
+  args=$#
 
-  array_schema=$(read_schema "$table_name")
+  # first lets check if the args are the same
 
-  shift
-
-  # first lets check if the arguments are the same
-
-  if (arguments -nq echo ${#array_schema[@]}); then
-
-    echo " Incorrect number of Entries: Entries should be as follows: Table  ${array_schema[*@]}"
-
+  if [[ $args -ne ${#array_schema[@]} ]]; then
+    echo " Incorrect number of Entries: Entries should be as follows: Table  ${array_schema[*]}"
     return 1
   fi
 
@@ -68,9 +65,9 @@ function insert_entries() {
         return 1
       fi
       ;;
-    "string")
+    "str")
 
-      if ! [[ "${input}" =~ ^[a-zA-Z][^,] ]]; then
+      if ! [[ "${input}" =~ ^[[:alnum:]]+[^,]$ ]]; then
 
         echo " the field you entered ${input} is not an allowed string"
 
@@ -80,7 +77,6 @@ function insert_entries() {
       ;;
 
     *)
-
       echo " wrong data type "
 
       return 1
@@ -94,17 +90,13 @@ function insert_entries() {
   # now we checked that each argument is corectly entered as opposed to the table's schema
 
   data_entered=""
-  delimeter="  "
-
+  delimeter=","
   for arg in "$@"; do
-
-    data_entered+="$delimeter$arg"
+    data_entered+="$arg$delimeter"
   done
-
   # append data_enetered to the file
-
-  echo "$data_entered" >>"$table_name"
-
+  echo "${data_entered::-1}" >> "$table_name"
   return 0
-
 }
+
+insert_entries "$@"

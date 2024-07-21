@@ -11,7 +11,7 @@ elif [[ ! -f "../../databases/$1/$2.csv" ]]; then
   echo "Table does not exist: $2"
   exit 1
 else
-  cond_re="^([[:alpha:]]+)([<>=!]{1,2})([[:alpha_num:]])$"
+  cond_re="^([[:alpha:]]+)([<>=!]{1,2})([[:alnum:]])$"
   # Check for valid condition: (field eg. salary)(operator eg. >)(value eg. 10000) --> salary>10000
   if [[ ! $3 =~ $cond_re ]]; then
     echo "Invalid condition: $3"
@@ -32,7 +32,7 @@ else
     exit 1
   # Check if operator is valid
   elif
-    [[ $comp_op != "=" && $comp_op != ">" && $comp_op != "<" && $comp_op != ">=" && $comp_op != "<=" && $comp_op != "!=" ]]; then
+    [[ $comp_op != "==" && $comp_op != ">" && $comp_op != "<" && $comp_op != ">=" && $comp_op != "<=" && $comp_op != "!=" ]]; then
     echo "Invalid operator: $comp_op"
     exit 1
   # Check if type of value matches type of field (specifically if field is integer)
@@ -42,7 +42,7 @@ else
   fi
   field_number=$(grep -nG "^$field:" "../../databases/$1/.$2.schema" | cut -d ":" -f 1)
   awk_cmd="awk -F ',' '{if (\$${field_number} ${comp_op} ${value}) print NR}' ../../databases/\$1/\$2.csv"
-  matched_rows=$(eval "$awk_cmd")
+  matched_rows=$(eval "$awk_cmd") # 1 5 15 25 40
   echo "$matched_rows"
   exit 0
 fi
