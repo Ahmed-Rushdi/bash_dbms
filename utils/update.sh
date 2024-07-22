@@ -14,6 +14,34 @@ elif [[ $(grep -cG "^$3:" "../databases/$1/.$2.schema") -eq 0 ]]; then
   echo "Attribute does not exist: $3"
 else
   declare -a lines
-  lines=($(./paresers/parse_update.sh "${@:1:3}"))
-
+  IFS=" " read -ra lines <<<"$(./parsers/parse_update.sh "${@:1:3}")"
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
+  declare -A values
+  IFS="," read -ra names_values <<<"$4"
+  for name_value in "${names_values[@]}"; do
+    key=$(echo "$name_value" | cut -d ':' -f1)
+    value=$(echo "$name_value" | cut -d ':' -f2)
+    if [[ $(grep -cG "^$key:" "../databases/$1/.$2.schema") -eq 0 ]]; then
+      echo "Attribute does not exist: $key"
+      exit 1
+    elif [[ $value == "NULL" && $(grep -cG "^$key:(int|str):[nN]$" "../databases/$1/.$2.schema") -eq 0 ]] || [[ ! $value =~ ^([[:digit:]]+|NULL)$ && $(grep -cG "^$key:int:[yY]$" "../databases/$1/.$2.schema") -eq 0 ]]; then
+      echo "Invalid value: $value for $key"
+      exit 1
+    else
+      key_pos=$(grep -nG "^$key:" "../databases/$1/.$2.schema" | cut -d ':' -f1)
+      key_pos=$((key_pos - 1))
+      if [[ $key_pos -eq 0 && $(grep -cG "^$value," "../databases/$1/$2.csv") -ne 0 ]]; then
+        echo "Invalid value: repeated primary key $key $value"
+        exit 1
+      fi
+    fi
+    values[$key_pos]="$value"
+  done
+  for line in "${lines[@]}"; do
+    for key_pos in "${!values[@]}"; do
+      sed -iE "${line}s/^((.+?,){${key_pos})[^,]+?(,.*)$/\1${values[$key_pos]}\3/g" "../databases/$1/$2.csv"
+    done
+  done
 fi

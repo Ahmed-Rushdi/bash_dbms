@@ -36,7 +36,7 @@ else
     echo "Invalid operator: $comp_op"
     exit 1
   # Check if type of value matches type of field (specifically if field is integer)
-  elif [[ $v_type == "str" && $(grep -cG "^$field:$v_type.*$" "../../databases/$1/$2.csv") -eq 0 ]]; then
+  elif [[ $v_type == "str" && $(grep -cG "^$field:$v_type.*$" "../../databases/$1/.$2.schema") -eq 0 ]]; then
     echo "Invalid value: $value for $field"
     exit 1
   fi
