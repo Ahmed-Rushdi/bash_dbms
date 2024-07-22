@@ -19,15 +19,10 @@ function read_schema() {
       fi
 
     done < "$schema_file"
-
   else
-
     echo " schema file not found "
-
     return 1
-
   fi
-
   echo "${data_types_array[@]}"
 
 }
@@ -47,7 +42,6 @@ function insert_entries() {
     echo " Incorrect number of Entries: Entries should be as follows: Table  ${array_schema[*]}"
     return 1
   fi
-
   # lets check each argument with the data type from the schema respectively
 
   index=0
@@ -65,19 +59,14 @@ function insert_entries() {
           if ! [[ "$input" =~ ^[0-9]+[Nn][Uu][Ll][Ll]+$ ]]; then
 
           echo " the field you entered ${input} is not of type int "
-
           return 1
 
           fi
-
       else
-
           if ! [[ "$input" =~ ^[0-9]+$ ]]; then
 
           echo " the field you entered ${input} is not of type int "
-
           return 1
-
           fi
 
       fi
@@ -87,15 +76,12 @@ function insert_entries() {
       if ! [[ "${input}" =~ ^[[:alnum:]]+[^,]$ ]]; then
 
         echo " the field you entered ${input} is not an allowed string"
-
         return 1
-
       fi
       ;;
 
     *)
       echo " wrong data type "
-
       return 1
       ;;
 
@@ -103,7 +89,6 @@ function insert_entries() {
     ((index++))
 
   done
-
   # now we checked that each argument is corectly entered as opposed to the table's schema
 
   data_entered=""

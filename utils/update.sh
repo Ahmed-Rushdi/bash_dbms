@@ -14,7 +14,7 @@ elif [[ $(grep -cG "^$3:" "../databases/$1/.$2.schema") -eq 0 ]]; then
   echo "Attribute does not exist: $3"
 else
   declare -a lines
-  IFS=" " read -ra lines <<<"$(./parsers/parse_update.sh "${@:1:3}")"
+  IFS=" " read -ra lines <<<"$(./parsers/parse_conditon.sh "${@:1:3}")"
   if [ $? -ne 0 ]; then
     exit 1
   fi
