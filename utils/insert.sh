@@ -56,13 +56,30 @@ function insert_entries() {
 
     case "${array_schema[$index]}" in
 
+     check_null="${input#*:}"
+
     "int")
 
-      if ! [[ "$input" =~ ^[0-9]+$ ]]; then
+       if [[ "$check_null" == ^[Yy]$ ]]; then 
 
-        echo " the field you entered ${input} is not of type int "
+          if ! [[ "$input" =~ ^[0-9]+[Nn][Uu][Ll][Ll]+$ ]]; then
 
-        return 1
+          echo " the field you entered ${input} is not of type int "
+
+          return 1
+
+          fi
+
+      else
+
+          if ! [[ "$input" =~ ^[0-9]+$ ]]; then
+
+          echo " the field you entered ${input} is not of type int "
+
+          return 1
+
+          fi
+
       fi
       ;;
     "str")
