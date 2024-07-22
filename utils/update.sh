@@ -44,4 +44,6 @@ else
       sed -iE "${line}s/^((.+?,){${key_pos})[^,]+?(,.*)$/\1${values[$key_pos]}\3/g" "../databases/$1/$2.csv"
     done
   done
+  echo "Updated ${#lines[@]} rows in $2 successfully"
+  exit 0
 fi
