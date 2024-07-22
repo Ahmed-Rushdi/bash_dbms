@@ -23,7 +23,7 @@ function parse_schema() {
 }
 
 if [[ $# -lt 3 ]]; then
-  echo "Usage: $(basename "${0}") <database_name> <table_name> <pk_name:pk_type> <attribute1_name:attribute1_type:nullable> <attribute2_name:attribute2_type:nullable>"
+  echo "Usage: $(basename "${0}") <database_name> <table_name> <pk_name:pk_type> <attribute1_name:attribute1_type:nullable> <attribute2_name:attribute2_type:nullable> ..."
   exit 1
 elif [[ ! -d "../databases/${1}" ]]; then
   echo "Database does not exist"
