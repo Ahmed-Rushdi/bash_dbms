@@ -10,8 +10,17 @@ select REPLY in "List databases" "Connect to database" "Create database" "Drop d
     ;;
   "Connect to database")
     read -p "Enter database name : " db_name
-    export database_name=$(../utils/connect_database.sh "$db_name")
-    ./table_menu.sh
+    export database_name=$(
+      ../utils/connect_database.sh "$db_name"
+      echo $?
+    )
+    if [ $? -eq 0 ]; then
+      echo "database $db_name connected successfully"
+      ./table_menu.sh
+    else
+      echo "database $db_name does not exist"
+      unset database_name
+    fi
     ;;
   "Create database")
     read -p "Enter database name : " db_name

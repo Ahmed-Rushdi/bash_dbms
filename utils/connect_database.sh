@@ -11,6 +11,7 @@ database_name=$1
 #if [[ $database_name =~ ^[a-zA-z][a-zA-Z0-9_]+$ ]]; then
     if [ ! -d "$databases/$database_name" ]; then
      echo " database does not exist"
+     exit 1
     else 
     echo "$database_name"
     fi
@@ -20,6 +21,7 @@ database_name=$1
 }
 if [ $# -ne 1 ]; then
    echo "please enter only one database name"
+   exit 1
 else
 connect_database "$1"
 fi
