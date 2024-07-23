@@ -35,5 +35,5 @@ IFS=$'\n' sorted_to_delete=($(sort -nr <<<"${to_delete[*]}"))
     delete_final+="${index}d;"
   done
 
-    sed -i "$delete_final" "$2"
+    sed -i "$delete_final" "../databases/$1/$2"
 fi
