@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 
 list_tables(){
 
-    number_of_files=("$database"/*)
+    number_of_files=(../databases/"$1"/*)
     if [ ${#number_of_files[@]} -eq 0 ]; then
     echo "Data base is empty"
     fi
@@ -12,10 +12,10 @@ list_tables(){
  for file in "${number_of_files[@]}"; do
      if [[ -f $file ]]; then
         if [[ $file == *.csv || $file == "${file}.schema" ]]; then
-          echo " table : $file"
-          echo " schema: $file.schema"
+          echo " table : $(basename $file)"
+#          echo " schema: .$file.schema"
         fi
     fi
 done
 }
-list_tables
+list_tables $1

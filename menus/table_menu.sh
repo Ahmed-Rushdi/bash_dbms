@@ -5,13 +5,13 @@ PS3=" Choose an option: "
 select REPLY in "List tables" "select table" "Create table" "update table" "delete table" "drop table" "Exit"; do
   case $REPLY in
   "List tables")
-  ../utils/list_table.sh
+  ../utils/list_table.sh "$database_name"
   ;;
   "select table")
-  read -p "Enter table name and condition (ex: table_name field_name condition value):"  table_name  condition 
-  ../utils/select.sh "$databse_name" "$table_name"  "$condition" 
+  read -p "Enter table name and condition (ex: table_name field_name condition value):"  table_name  condition
+  ../utils/select.sh "$databse_name" "$table_name"  "$condition"
   if [ $? -eq 0 ]; then
-      echo "table $table_name is selected successfully" 
+      echo "table $table_name is selected successfully"
   fi
   ;;
   "Create table")
@@ -21,24 +21,24 @@ select REPLY in "List tables" "select table" "Create table" "update table" "dele
   ../utils/create_table.sh "$database_name" "$@"
   ;;
   "update table")
-  read -p "Enter table name and condition (ex: table_name field_name condition value):"  table_name  condition 
-  ../utils/update.sh "$databse_name" "$table_name" "$condition" 
+  read -p "Enter table name and condition (ex: table_name field_name condition value):"  table_name  condition
+  ../utils/update.sh "$databse_name" "$table_name" "$condition"
   if [ $? -eq 0 ]; then
-      echo "table $table_name is updated successfully" 
+      echo "table $table_name is updated successfully"
   fi
   ;;
   "delete table")
-  read -p "Enter table name and condition (ex: table_name field_name condition value):"  table_name  condition 
-  ../utils/delete.sh "$databse_name" "$table_name" "$condition" 
+  read -p "Enter table name and condition (ex: table_name field_name condition value):"  table_name  condition
+  ../utils/delete.sh "$databse_name" "$table_name" "$condition"
   if [ $? -eq 0 ]; then
-      echo "table $table_name fields deleted successfully" 
+      echo "table $table_name fields deleted successfully"
   fi
   ;;
   "drop table")
-  read -p "Enter table name to be dropped :"  table_name  
-  ../utils/drop_table.sh "$databse_name" "$table_name" 
+  read -p "Enter table name to be dropped :"  table_name
+  ../utils/drop_table.sh "$databse_name" "$table_name"
   if [ $? -eq 0 ]; then
-      echo "table $table_name is dropped successfully" 
+      echo "table $table_name is dropped successfully"
   fi
   ;;
   "Exit")
