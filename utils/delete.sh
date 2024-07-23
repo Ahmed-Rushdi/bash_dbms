@@ -27,13 +27,13 @@ declare -a to_delete
   IFS=" " read -ra to_delete <<<"$output"
 
 # sort the array lines to be deleted descendingly so it does not affect the order of the table records
-IFS=$'\n' sorted_to_delete=($(sort -nr <<<"${to_delete[*]}"))
+#IFS=$'\n' sorted_to_delete=($(sort -nr <<<"${to_delete[*]}"))
 
 # using sed d directive to make delete command per line and save them in an array
  delete_final=()
-  for index in "${sorted_to_delete[@]}"; do
-    delete_final+="${index}d;"
+  for index in "${to_delete[@]}"; do
+    delete_final+="-e '${index}d'"
   done
 
-    sed -i "$delete_final" "../databases/$1/$2"
+    sed -i "${delete_final[*]}" "$2"
 fi
