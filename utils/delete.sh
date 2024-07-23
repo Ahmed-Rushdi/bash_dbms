@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-if [ $# -lt 3]; then
+if [[ $# -lt 3 ]]; then
   echo " Usage $(basename $0) <database_name> <table_name> condition( <field_name condition value> )"
   exit 1
 elif [[ ! -d "../databases/$1" ]]; then
@@ -35,3 +35,4 @@ IFS=$'\n' sorted_to_delete=($(sort -nr <<<"${to_delete[*]}"))
     sed -i "$command" "$2"
   done
 
+fi
