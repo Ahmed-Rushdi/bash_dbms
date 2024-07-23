@@ -90,14 +90,15 @@ function insert_entries() {
 
   done
   # now we checked that each argument is corectly entered as opposed to the table's schema
-
   data_entered=""
   delimeter=","
+
   for arg in "$@"; do
     data_entered+="$arg$delimeter"
   done
-  # append data_enetered to the file
-  echo "${data_entered::-1}" >> "$table_name"
+
+  data_entered="${data_entered::-1}"
+  sed -i -e '$a\' -e "$data_entered" "$table_name"
   return 0
 }
 
