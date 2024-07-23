@@ -32,8 +32,8 @@ declare -a to_delete
 # using sed d directive to make delete command per line and save them in an array
  delete_final=()
   for index in "${to_delete[@]}"; do
-    delete_final+="-e '${index}d'"
+    delete_final+=("-e '${index}d'")
   done
-
-    sed -i "${delete_final[*]}" "$2"
+    echo "-i" "${delete_final[*]}" "../databases/$1/$2"
+    sed -i "${delete_final[*]}" "../databases/$1/$2"
 fi
