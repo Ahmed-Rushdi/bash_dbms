@@ -36,6 +36,8 @@ else
     elif [[ ! $value =~ ^([[:digit:]]+|NULL)$ && $(grep -cG "^$key:int:[yY]$" "../databases/$1/.$2.schema") -eq 1 ]]; then
       echo "Invalid value: $value for $key (int not str)"
       exit 1
+    elif [[ $value =~ ^(.*?,).*$ && $(grep -cG "^$key:str:" "../databases/$1/.$2.schema") -eq 1  ]]; then
+      echo "Invalid value: $value for $key (str cannot contain commas)"
     else
       key_pos=$(grep -nG "^$key:" "../databases/$1/.$2.schema" | cut -d ':' -f1)
       key_pos=$((key_pos - 1))
@@ -48,20 +50,20 @@ else
   done
   #  for line in "${lines[@]}"; do
   #    for key_pos in "${!values[@]}"; do
-  #      sed -iE "${line}s/^((.+?,){${key_pos})[^,]+?(,.*)$/\1${values[$key_pos]}\3/g" "../databases/$1/$2.csv"
+  #      sed -iE "${line}s/^((.*?,){${key_pos})[^,]+?(,.*)$/\1${values[$key_pos]}\3/g" "../databases/$1/$2.csv"
   #    done
   #  done
-#  cat <<EOF
-#$(for line in "${lines[@]}"; do
-#    for key_pos in "${!values[@]}"; do
-#      echo "${line}s/^((.+?,){${key_pos}})[^,]+?(,.*)$/\1${values[$key_pos]}\3/g"
-#    done
-#  done)
-#EOF
+  cat <<EOF
+$(for line in "${lines[@]}"; do
+    for key_pos in "${!values[@]}"; do
+      echo "${line}s/^((.*?,){${key_pos}})[^,]+?(,.*)$/\1${values[$key_pos]}\3/g"
+    done
+  done)
+EOF
   sed -i -E -f - "../databases/$1/$2.csv" <<EOF
 $(for line in "${lines[@]}"; do
     for key_pos in "${!values[@]}"; do
-      echo "${line}s/^((.+?,){${key_pos}})[^,]+?(,.*)$/\1${values[$key_pos]}\3/g"
+      echo "${line}s/^((.*?,){${key_pos}})[^,]+?(,.*)$/\1${values[$key_pos]}\3/g"
     done
   done)
 EOF

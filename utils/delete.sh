@@ -11,8 +11,8 @@ elif [[ ! -d "../databases/$1" ]]; then
 elif [[ ! -f "../databases/$1/$2.csv" ]]; then
   echo "Table does not exist: $2"
   exit 1
-elif [[ $(grep -cG "^$3:" "../databases/$1/.$2.schema") -eq 0 ]]; then
-  echo "Field does not exist: $3"
+#elif [[ $(grep -cG "^$3:" "../databases/$1/.$2.schema") -eq 0 ]]; then
+#  echo "Field does not exist: $3"
 else
 declare -a to_delete
 
@@ -27,13 +27,15 @@ declare -a to_delete
   IFS=" " read -ra to_delete <<<"$output"
 
 # sort the array lines to be deleted descendingly so it does not affect the order of the table records
-#IFS=$'\n' sorted_to_delete=($(sort -nr <<<"${to_delete[*]}"))
-
+IFS=$'\n' sorted_to_delete=($(sort -nr <<<"${to_delete[*]}"))
+unset IFS
+echo "${sorted_to_delete[@]}"
 # using sed d directive to make delete command per line and save them in an array
- delete_final=()
-  for index in "${to_delete[@]}"; do
-    delete_final+=("-e '${index}d'")
+ delete_final=""
+  for index in "${sorted_to_delete[@]}"; do
+    delete_final+="${index}d;"
   done
-    echo "-i" "${delete_final[*]}" "../databases/$1/$2"
-    sed -i "${delete_final[*]}" "../databases/$1/$2"
+    echo "${delete_final}"
+    echo "-i" "${delete_final}" "../databases/$1/$2.csv"
+    sed -i "${delete_final}" "../databases/$1/$2.csv"
 fi

@@ -11,14 +11,14 @@ function read_schema() {
 
     while IFS= read -r line; do
 
-      data_type=$("$line" | cut -d ':' -f2)
-      nullable=$("$line" | cut -d ':' -f3)
+      data_type=$(echo "$line" | cut -d ':' -f2)
+      nullable=$(echo "$line" | cut -d ':' -f3)
 
       if [[ "$data_type" ]]; then
         data_types_array+=("$data_type:$nullable")
       fi
 
-    done < "$schema_file"
+    done <"$schema_file"
   else
     echo " schema file not found "
     return 1
@@ -31,9 +31,8 @@ function insert_entries() {
   database_name=$1
   table_name=$2
 
-  array_schema=$(read_schema "$database_name" "$table_name")
+  IFS=" " read -r -a array_schema <<<"$(read_schema "$database_name" "$table_name")"
   shift 2
-
   args=$#
 
   # first lets check if the args are the same
@@ -46,34 +45,30 @@ function insert_entries() {
 
   index=0
 
-  for input in "$@"; do
+  for input in $@; do
     type=${array_schema[$index]%:*}
     case "$type" in
-
-
     "int")
-        check_null="${array_schema[$index]#*:}"
-
-       if [[ "$check_null" == ^[Yy]$ ]]; then 
-
-          if ! [[ "$input" =~ ^[0-9]+[Nn][Uu][Ll][Ll]+$ ]]; then
+      check_null="${array_schema[$index]#*:}"
+      if [[ $check_null =~ ^[Yy]$ ]]; then
+        if ! [[ "$input" =~ ^([0-9]+|NULL)$ ]]; then
 
           echo " the field you entered ${input} is not of type int "
           return 1
 
-          fi
+        fi
       else
-          if ! [[ "$input" =~ ^[0-9]+$ ]]; then
+        if ! [[ "$input" =~ ^[0-9]+$ ]]; then
 
           echo " the field you entered ${input} is not of type int "
           return 1
-          fi
+        fi
 
       fi
       ;;
     "str")
 
-      if ! [[ "${input}" =~ ^[[:alnum:]]+[^,]$ ]]; then
+      if [[ "${input}" =~ ^(.*?,).*$ ]]; then
 
         echo " the field you entered ${input} is not an allowed string"
         return 1
@@ -98,8 +93,18 @@ function insert_entries() {
   done
 
   data_entered="${data_entered::-1}"
-  sed -i -e '$a\' -e "$data_entered" "$table_name"
+  #  sed -i -e '$a\' -e "$data_entered" "../databases/$database_name/$table_name.csv"
+  pk=$(echo "$data_entered" | cut -d ',' -f1)
+  if [[ $(grep -cG "^$pk," "../databases/$database_name/$table_name.csv") -ne 0 ]]; then
+    echo "Duplicate primary key"
+    return 1
+  fi
+
+  echo "$data_entered" >>"../databases/$database_name/$table_name.csv"
+  echo "Inserted successfully"
   return 0
+
 }
 
-insert_entries "$@"
+insert_entries $@
+exit $?

@@ -26,7 +26,6 @@ select REPLY in "List tables" "select table" "Insert into table" "Create table" 
   "update table")
   read -p "Enter table name and condition and values to update as follows (ex: <table_name> <condition> <attr_name:new_attr_val,attr_name:new_attr_val,...>): " table_name condition updated_values
   ../utils/update.sh "$database_name" "$table_name" "$condition" "$updated_values"
-  echo here2
 #  if [ $? -eq 0 ]; then
 #      echo "table $table_name is updated successfully"
 #  fi
