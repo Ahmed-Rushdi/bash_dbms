@@ -44,6 +44,7 @@ select REPLY in "List tables" "select table" "Create table" "update table" "dele
   "Exit")
     exit 0
     ;;
+  *)
     echo "invalid option $REPLY"
     ;;
   esac
