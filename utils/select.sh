@@ -18,7 +18,7 @@ elif [[ $(grep -cG "^$3:" "../databases/$1/.$2.schema") -eq 0 ]]; then
 else
 # pass the arguments to the parse_condition script to find matching lines in the table !
 declare -a selected_lines
-IFS=" " read -ra selected_lines  <<<"$(./parsers/parse_condition.sh "${@:1:3}")"
+IFS=" " read -ra selected_lines  <<<"$(../parsers/parse_condition.sh "${@:1:3}")"
 # exit  if condition was not met 
   if [ $? -ne 0 ]; then
     exit 1

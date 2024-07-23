@@ -16,7 +16,7 @@ elif [[ $(grep -cG "^$3:" "../databases/$1/.$2.schema") -eq 0 ]]; then
 else
 declare -a to_delete
 
-  IFS=" " read -ra lines <<<"$(./parsers/parse_conditon.sh "${@:1:3}")"
+  IFS=" " read -ra lines <<<"$(../parsers/parse_condition.sh "${@:1:3}")"
   # exit  if condition was not met 
   if [ $? -ne 0 ]; then
     exit 1
@@ -28,7 +28,7 @@ IFS=$'\n' sorted_to_delete=($(sort -nr <<<"${to_delete[*]}"))
 # using sed d directive to make delete command per line and save them in an array
  delete_final=()
   for index in "${sorted_to_delete[@]}"; do
-    delete_final+="${index}d"
+    delete_final+="${index}d;"
   done
 
     sed -i "$delete_final" "$2"
