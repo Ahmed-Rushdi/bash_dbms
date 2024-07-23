@@ -13,12 +13,16 @@ elif [[ ! -f "../databases/$1/$2.csv" ]]; then
 elif [[ $(grep -cG "^$3:" "../databases/$1/.$2.schema") -eq 0 ]]; then
   echo "Attribute does not exist: $3"
 else
-  declare -a lines
-  IFS=" " read -ra lines <<<"$(../parsers/parse_condition.sh "${@:1:3}")"
+  output=$(
+    ../parsers/parse_condition.sh "${@:1:2}" "$3"
+    exit $?
+  )
   if [ $? -ne 0 ]; then
-    echo "${lines[*]}"
+    echo "$output"
     exit 1
   fi
+  IFS=" " read -ra lines <<<"$output"
+
   declare -A values
   IFS="," read -ra names_values <<<"$4"
   for name_value in "${names_values[@]}"; do

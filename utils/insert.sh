@@ -47,12 +47,12 @@ function insert_entries() {
   index=0
 
   for input in "$@"; do
+    type=${array_schema[$index]%:*}
+    case "$type" in
 
-    case "${array_schema[$index]}" in
-
-     check_null="${input#*:}"
 
     "int")
+        check_null="${array_schema[$index]#*:}"
 
        if [[ "$check_null" == ^[Yy]$ ]]; then 
 

@@ -12,7 +12,8 @@ list_tables(){
  for file in "${number_of_files[@]}"; do
      if [[ -f $file ]]; then
         if [[ $file == *.csv || $file == "${file}.schema" ]]; then
-          echo " table : $(basename $file)"
+          table_name=$(basename $file)
+          echo " table : ${table_name%.csv}"
 #          echo " schema: .$file.schema"
         fi
     fi

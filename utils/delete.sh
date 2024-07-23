@@ -16,11 +16,15 @@ elif [[ $(grep -cG "^$3:" "../databases/$1/.$2.schema") -eq 0 ]]; then
 else
 declare -a to_delete
 
-  IFS=" " read -ra lines <<<"$(../parsers/parse_condition.sh "${@:1:3}")"
-  # exit  if condition was not met 
+  output=$(
+    ../parsers/parse_condition.sh "${@:1:2}" "$3"
+    exit $?
+  )
   if [ $? -ne 0 ]; then
+    echo "$output"
     exit 1
-fi
+  fi
+  IFS=" " read -ra to_delete <<<"$output"
 
 # sort the array lines to be deleted descendingly so it does not affect the order of the table records
 IFS=$'\n' sorted_to_delete=($(sort -nr <<<"${to_delete[*]}"))
