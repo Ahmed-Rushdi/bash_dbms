@@ -1,4 +1,5 @@
 #!/bin/bash
+
 cd "$(dirname "${0}")"
 PS3="Choose an option: "
 

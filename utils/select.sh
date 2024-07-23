@@ -24,8 +24,7 @@ IFS=" " read -ra selected_lines  <<<"$(./parsers/parse_condition.sh "${@:1:3}")"
     exit 1
 fi
 for line in "${selected_lines[@]}"; do 
-   echo "$line"
-   # need sed here to print the actual lines
+  awk -v line="$line" 'NR == line { print }' "$table_name"
 done
 exit 0
 fi
