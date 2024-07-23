@@ -12,7 +12,7 @@ select REPLY in "List databases" "Connect to database" "Create database" "Drop d
     read -p "Enter database name : " db_name
     export database_name=$(
       ../utils/connect_database.sh "$db_name"
-      echo $?
+      exit $?
     )
     if [ $? -eq 0 ]; then
       echo "database $db_name connected successfully"

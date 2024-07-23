@@ -24,22 +24,23 @@ select REPLY in "List tables" "select table" "Insert into table" "Create table" 
   ../utils/create_table.sh "$database_name" "$@"
   ;;
   "update table")
-  read -p "Enter table name and condition (ex: table_name field_name condition value):"  table_name  condition
-  ../utils/update.sh "$databse_name" "$table_name" "$condition"
-  if [ $? -eq 0 ]; then
-      echo "table $table_name is updated successfully"
-  fi
+  read -p "Enter table name and condition and values to update as follows (ex: <table_name> <condition> <attr_name:new_attr_val,attr_name:new_attr_val,...>): " table_name condition updated_values
+  ../utils/update.sh "$database_name" "$table_name" "$condition" "$updated_values"
+  echo here2
+#  if [ $? -eq 0 ]; then
+#      echo "table $table_name is updated successfully"
+#  fi
   ;;
   "delete table")
   read -p "Enter table name and condition (ex: table_name field_name condition value):"  table_name  condition
-  ../utils/delete.sh "$databse_name" "$table_name" "$condition"
+  ../utils/delete.sh "$database_name" "$table_name" "$condition"
   if [ $? -eq 0 ]; then
       echo "table $table_name fields deleted successfully"
   fi
   ;;
   "drop table")
   read -p "Enter table name to be dropped :"  table_name
-  ../utils/drop_table.sh "$databse_name" "$table_name"
+  ../utils/drop_table.sh "$database_name" "$table_name"
   if [ $? -eq 0 ]; then
       echo "table $table_name is dropped successfully"
   fi

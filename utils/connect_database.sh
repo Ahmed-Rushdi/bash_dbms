@@ -2,26 +2,26 @@
 
 cd "$(dirname "${0}")"
 
-connect_database(){
+connect_database() {
 
-databases="../databases"
-database_name=$1
+  databases="../databases"
+  database_name=$1
 
- #### starts with alphapetic ####
-#if [[ $database_name =~ ^[a-zA-z][a-zA-Z0-9_]+$ ]]; then
-    if [ ! -d "$databases/$database_name" ]; then
-     echo " database does not exist"
-     exit 1
-    else 
+  #### starts with alphapetic ####
+  #if [[ $database_name =~ ^[a-zA-z][a-zA-Z0-9_]+$ ]]; then
+  if [ ! -d "$databases/$database_name" ]; then
+    echo " database does not exist"
+    exit 1
+  else
     echo "$database_name"
-    fi
-#else
-#echo "enter database name correctly- only alphapets and unserscores are allowed"
-#fi
+  fi
+  #else
+  #echo "enter database name correctly- only alphapets and unserscores are allowed"
+  #fi
 }
 if [ $# -ne 1 ]; then
-   echo "please enter only one database name"
-   exit 1
+  echo "please enter only one database name"
+  exit 1
 else
-connect_database "$1"
+  connect_database "$1"
 fi
