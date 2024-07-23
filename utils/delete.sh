@@ -28,11 +28,8 @@ IFS=$'\n' sorted_to_delete=($(sort -nr <<<"${to_delete[*]}"))
 # using sed d directive to make delete command per line and save them in an array
  delete_final=()
   for index in "${sorted_to_delete[@]}"; do
-    delete_final+=("${index}d")
+    delete_final+="${index}d"
   done
 
- for command in "${delete_final[@]}"; do
-    sed -i "$command" "$2"
-  done
-
+    sed -i -e  "$delete_final" "$2"
 fi
