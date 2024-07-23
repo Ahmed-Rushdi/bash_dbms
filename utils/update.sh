@@ -16,6 +16,7 @@ else
   declare -a lines
   IFS=" " read -ra lines <<<"$(./parsers/parse_conditon.sh "${@:1:3}")"
   if [ $? -ne 0 ]; then
+    echo "${lines[*]}"
     exit 1
   fi
   declare -A values

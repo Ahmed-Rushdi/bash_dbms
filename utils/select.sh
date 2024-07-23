@@ -4,7 +4,7 @@
 
 cd "$(dirname "$0")"
 
-if [ $# -lt 3]; then
+if [[ $# -lt 3 ]]; then
   echo " Usage $(basename $0) <database_name> <table_name> condition( <field_name condition value> )"
   exit 1
 elif [[ ! -d "../databases/$1" ]]; then
@@ -25,9 +25,10 @@ IFS=" " read -ra selected_lines  <<<"$(./parsers/parse_condition.sh "${@:1:3}")"
 fi
 for line in "${selected_lines[@]}"; do 
    echo "$line"
+   # need sed here to print the actual lines
 done
-exist 0
-
+exit 0
+fi
 
 
 
